@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:f="https://PasaulioFilmai.lt/filmai"
+           targetNamespace="https://PasaulioFilmai.lt/filmai"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified">
+
+    <xs:simpleType name="FilmoIdTipas">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="F\d{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="AktoriausIdTipas">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="A\d{3}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RegionasTipas">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="EU"/>
+            <xs:enumeration value="US"/>
+            <xs:enumeration value="AS"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="KalbosKodasTipas">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[A-Z]{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="MetaiTipas">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1888"/>
+            <xs:maxInclusive value="2100"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="TrukmeTipas">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+            <xs:maxInclusive value="600"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="IvertinimasTipas">
+        <xs:restriction base="xs:decimal">
+            <xs:minInclusive value="0"/>
+            <xs:maxInclusive value="10"/>
+            <xs:fractionDigits value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="AktoriausRusisTipas">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="pagrindinis"/>
+            <xs:enumeration value="epizodinis"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RegionuSarasasTipas">
+        <xs:list itemType="f:RegionasTipas"/>
+    </xs:simpleType>
+
+
+    <xs:complexType name="TekstasTipas">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="kalba" type="xs:language"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="ZanrasTipas">
+        <xs:simpleContent>
+            <xs:restriction base="f:TekstasTipas">
+                <xs:enumeration value="Mokslinė fantastika"/>
+                <xs:enumeration value="Trileris"/>
+                <xs:enumeration value="Drama"/>
+                <xs:enumeration value="Veiksmo"/>
+                <xs:enumeration value="Komedija"/>
+                <xs:enumeration value="Siaubo"/>
+            </xs:restriction>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="PavadinimasTipas">
+        <xs:simpleContent>
+            <xs:extension base="f:TekstasTipas">
+                <xs:attribute name="originalus" type="xs:boolean"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="AktoriausNuorodaTipas">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="aktorius" type="f:AktoriausIdTipas" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+
+    <!-- Bazinis tipas: asmuo -->
+    <xs:complexType name="AsmuoTipas">
+        <xs:sequence>
+            <xs:element name="vardas" type="xs:string"/>
+            <xs:element name="gimimoData" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RezisieriusTipas">
+        <xs:complexContent>
+            <xs:restriction base="f:AsmuoTipas">
+                <xs:sequence>
+                    <xs:element name="vardas" type="xs:string"/>
+                </xs:sequence>
+            </xs:restriction>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="AktoriusTipas">
+        <xs:complexContent>
+            <xs:extension base="f:AsmuoTipas">
+                <xs:sequence>
+                    <xs:element name="vaidmuo" type="xs:string"/>
+                </xs:sequence>
+                <xs:attribute name="id" type="f:AktoriausIdTipas" use="required"/>
+                <xs:attribute name="tipas" type="f:AktoriausRusisTipas" default="pagrindinis"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+ 
+    <!-- Aprašymas: tekstas, tarp kurio gali būti nuorodų į aktorius -->
+    <xs:complexType name="AprasasTipas" mixed="true">
+        <xs:sequence>
+            <xs:element name="aktoriusNuoroda" type="f:AktoriausNuorodaTipas"
+                        minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+
+    <xs:complexType name="PlatformaTipas">
+        <xs:attribute name="pavadinimas" type="xs:string" use="required"/>
+        <xs:attribute name="regionas" type="f:RegionasTipas" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="ZanraiTipas">
+        <xs:sequence>
+            <xs:element name="zanras" type="f:ZanrasTipas" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AktoriaiTipas">
+        <xs:sequence>
+            <xs:element name="aktorius" type="f:AktoriusTipas" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PlatformosTipas">
+        <xs:sequence>
+            <xs:element name="platforma" type="f:PlatformaTipas" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FilmasTipas">
+        <xs:sequence>
+            <xs:element name="pavadinimas" type="f:PavadinimasTipas"/>
+            <xs:element name="metai" type="f:MetaiTipas"/>
+            <xs:element name="trukme" type="f:TrukmeTipas"/>
+            <xs:element name="ivertinimas" type="f:IvertinimasTipas" minOccurs="0"/>
+
+            <xs:choice>
+                <xs:element name="premjera" type="xs:date"/>
+                <xs:element name="numatomaPremjera" type="xs:gYearMonth"/>
+            </xs:choice>
+
+            <xs:element name="zanrai" type="f:ZanraiTipas"/>
+            <xs:element name="rezisierius" type="f:RezisieriusTipas"/>
+            <xs:element name="aktoriai" type="f:AktoriaiTipas"/>
+            <xs:element name="platformos" type="f:PlatformosTipas"/>
+            <xs:element name="aprasas" type="f:AprasasTipas" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="id" type="f:FilmoIdTipas" use="required"/>
+        <xs:attribute name="salis" type="xs:string" use="required"/>
+        <xs:attribute name="kalba" type="f:KalbosKodasTipas" use="required"/>
+        <xs:attribute name="regionas" type="f:RegionasTipas" use="required"/>
+        <xs:attribute name="kitiRegionai" type="f:RegionuSarasasTipas"/>
+    </xs:complexType>
+
+    <xs:element name="katalogas">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="filmai">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="filmas" type="f:FilmasTipas" maxOccurs="unbounded">
+
+                                <!-- 8. KEY: aktoriaus id unikalus ir privalomas filmo viduje -->
+                                <xs:key name="aktoriausRaktas">
+                                    <xs:selector xpath="f:aktoriai/f:aktorius"/>
+                                    <xs:field xpath="@id"/>
+                                </xs:key>
+
+                                <!-- 8. KEYREF: nuoroda aprašyme turi rodyti į to paties filmo aktorių -->
+                                <xs:keyref name="aktoriausNuorodaRef" refer="f:aktoriausRaktas">
+                                    <xs:selector xpath="f:aprasas/f:aktoriusNuoroda"/>
+                                    <xs:field xpath="@aktorius"/>
+                                </xs:keyref>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+
+
+        <xs:unique name="filmoIdUnikalus">
+            <xs:selector xpath="f:filmai/f:filmas"/>
+            <xs:field xpath="@id"/>
+        </xs:unique>
+    </xs:element>
+
+    <!--
+         BLOGAI (užkomentuota, nes schema nebūtų galiojanti):
+
+         <xs:complexType name="BlogasRezisierius">
+             <xs:complexContent>
+                 <xs:restriction base="f:AsmuoTipas">
+                     <xs:sequence>
+                         <xs:element name="vardas" type="xs:string"/>
+                         <xs:element name="studija" type="xs:string"/>
+                     </xs:sequence>
+                 </xs:restriction>
+             </xs:complexContent>
+         </xs:complexType>
+
+         Kodėl blogai: apribojimo išvestinio tipo egzemplioriai turi galioti ir pagal
+         bazinį tipą. Bazinis AsmuoTipas neturi elemento "studija", todėl dokumentas su juo
+         galiotų pagal išvestinį, bet negaliotų pagal bazinį.
+
+         PATAISYMAS: kai reikia pridėti elementą – naudoti PRAPLĖTIMĄ (extension):
+
+         <xs:complexType name="GerasRezisierius">
+             <xs:complexContent>
+                 <xs:extension base="f:AsmuoTipas">
+                     <xs:sequence>
+                         <xs:element name="studija" type="xs:string"/>
+                     </xs:sequence>
+                 </xs:extension>
+             </xs:complexContent>
+         </xs:complexType>
+
+         (arba palikti apribojimą, bet tik pašalinti / susiaurinti bazinio tipo elementus).
+    -->
+</xs:schema>

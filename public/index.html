@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pasaulio filmai – katalogas</title>
+  <meta name="description" content="Filmų katalogas, valdomas per RESTful API (JSON / XML).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="praleisti" href="#katalogas">Pereiti prie katalogo</a>
+
+  <header class="svetaines-antraste">
+    <div class="klaperis" aria-hidden="true"></div>
+    <div class="antrastes-turinys">
+      <div>
+        <h1>Pasaulio filmai</h1>
+        <p class="paantraste">Katalogas, kurį tvarko REST API: peržiūra, pridėjimas, redagavimas ir šalinimas.</p>
+      </div>
+      <nav aria-label="Pagrindinė navigacija">
+        <ul>
+          <li><a href="#katalogas">Katalogas</a></li>
+          <li><a href="#api-zurnalas">API žurnalas</a></li>
+          <li><button type="button" id="naujas-filmas" class="mygtukas pagrindinis">Pridėti filmą</button></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="turinys">
+    <section id="katalogas" aria-labelledby="katalogo-antraste">
+      <header class="sekcijos-antraste">
+        <h2 id="katalogo-antraste">Filmai <small id="skaitiklis"></small></h2>
+        <form class="filtrai" role="search" aria-label="Filmų paieška ir rikiavimas">
+          <div class="laukas">
+            <label><span>Paieška</span>
+              <input type="search" id="paieska" placeholder="Pavadinimas, režisierius, aktorius" autocomplete="off">
+            </label>
+          </div>
+          <div class="laukas">
+            <label><span>Žanras</span>
+              <select id="zanro-filtras">
+                <option value="">Visi žanrai</option>
+                <option>Mokslinė fantastika</option>
+                <option>Trileris</option>
+                <option>Drama</option>
+                <option>Veiksmo</option>
+                <option>Komedija</option>
+                <option>Siaubo</option>
+              </select>
+            </label>
+          </div>
+          <div class="laukas">
+            <label><span>Rikiuoti</span>
+              <select id="rikiavimas">
+                <option value="pavadinimas">Pagal pavadinimą</option>
+                <option value="metai">Naujausi pirmi</option>
+                <option value="ivertinimas">Aukščiausias įvertinimas</option>
+                <option value="trukme">Ilgiausi pirmi</option>
+              </select>
+            </label>
+          </div>
+        </form>
+      </header>
+
+      <div id="pranesimas" class="pranesimas" role="status" hidden></div>
+      <div id="uzkrovimas" class="uzkrovimas" role="status" hidden>
+        <span class="sukutys" aria-hidden="true"></span>
+        <span>Kraunami filmai…</span>
+      </div>
+      <div id="filmu-sarasas" class="filmu-sarasas" aria-live="polite"></div>
+    </section>
+
+    <aside id="api-zurnalas" aria-labelledby="zurnalo-antraste">
+      <h2 id="zurnalo-antraste">API žurnalas</h2>
+      <p>Paskutinės sąsajos užklausos į serverį:</p>
+      <ol id="zurnalo-sarasas" class="zurnalas"><li class="tuscia">Užklausų dar nebuvo.</li></ol>
+      <h3>Maršrutai</h3>
+      <ul class="marsrutai">
+        <li><code>GET /api/filmai</code></li>
+        <li><code>GET /api/filmai/:id</code></li>
+        <li><code>POST /api/filmai</code></li>
+        <li><code>PUT /api/filmai/:id</code></li>
+        <li><code>DELETE /api/filmai/:id</code></li>
+      </ul>
+      <p class="pastaba">Formatą parenka antraštės <code>Accept</code> ir <code>Content-Type</code> (JSON arba XML). Mygtukas „XML“ prie filmo parodo to paties įrašo XML atsakymą.</p>
+    </aside>
+  </main>
+
+  <footer class="svetaines-apacia">
+    <p>Laboratoriniai darbai: REST API ir Vanilla HTML5 / CSS3 / JavaScript.</p>
+  </footer>
+
+  <!-- Kūrimo / redagavimo forma -->
+  <dialog id="forma-dialogas" aria-labelledby="formos-antraste">
+    <form id="filmo-forma" novalidate>
+      <header class="dialogo-antraste">
+        <h2 id="formos-antraste">Naujas filmas</h2>
+        <button type="button" class="mygtukas maza" data-veiksmas="uzdaryti" aria-label="Uždaryti formą">Uždaryti</button>
+      </header>
+
+      <div id="klaidu-blokas" class="klaidu-blokas" role="alert" hidden>
+        <h3>Išsaugoti nepavyko</h3>
+        <p id="klaidu-santrauka"></p>
+        <ul id="klaidu-sarasas"></ul>
+      </div>
+
+      <fieldset>
+        <legend>Pagrindiniai duomenys</legend>
+        <div class="tinklelis">
+          <div class="laukas"><label><span>ID</span><input type="text" name="id" data-path="/id" placeholder="Paliekite tuščią – suteiks serveris"></label></div>
+          <div class="laukas plati"><label><span>Pavadinimas *</span><input type="text" name="pavadinimas" data-path="/pavadinimas" required></label></div>
+          <div class="laukas"><label><span>Šalis *</span><input type="text" name="salis" data-path="/salis" required></label></div>
+          <div class="laukas"><label><span>Kalbos kodas * (pvz., EN)</span><input type="text" name="kalba" data-path="/kalba" required maxlength="5"></label></div>
+          <div class="laukas"><label><span>Regionas *</span>
+            <select name="regionas" data-path="/regionas" required>
+              <option value="">Pasirinkite</option><option>EU</option><option>US</option><option>AS</option>
+            </select></label></div>
+          <div class="laukas"><label><span>Metai *</span><input type="number" name="metai" data-path="/metai" step="any" required></label></div>
+          <div class="laukas"><label><span>Trukmė, min. *</span><input type="number" name="trukme" data-path="/trukme" step="any" required></label></div>
+          <div class="laukas"><label><span>Įvertinimas (0–10)</span><input type="number" name="ivertinimas" data-path="/ivertinimas" step="any"></label></div>
+        </div>
+        <div class="pasirinkimu-grupe">
+          <p class="grupes-pavadinimas" id="kiti-regionai-pavadinimas">Kiti regionai</p>
+          <div class="pasirinkimai" role="group" aria-labelledby="kiti-regionai-pavadinimas" data-path="/kitiRegionai">
+            <label class="zyma"><input type="checkbox" name="kitiRegionai" value="EU"> EU</label>
+            <label class="zyma"><input type="checkbox" name="kitiRegionai" value="US"> US</label>
+            <label class="zyma"><input type="checkbox" name="kitiRegionai" value="AS"> AS</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset id="premjeros-grupe">
+        <legend>Premjera *</legend>
+        <div class="pasirinkimai" role="radiogroup" aria-label="Premjeros tipas">
+          <label class="zyma"><input type="radio" name="premjerosTipas" value="premjera" checked> Jau įvyko</label>
+          <label class="zyma"><input type="radio" name="premjerosTipas" value="numatomaPremjera"> Numatoma</label>
+        </div>
+        <div class="laukas" id="premjeros-laukas"><label><span>Premjeros data *</span><input type="date" name="premjera" data-path="/premjera" required></label></div>
+        <div class="laukas" id="numatomos-laukas" hidden><label><span>Numatomas mėnuo *</span><input type="month" name="numatomaPremjera" data-path="/numatomaPremjera"></label></div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Žanrai *</legend>
+        <div class="pasirinkimai" role="group" aria-label="Žanrai" data-path="/zanrai">
+          <label class="zyma"><input type="checkbox" name="zanrai" value="Mokslinė fantastika"> Mokslinė fantastika</label>
+          <label class="zyma"><input type="checkbox" name="zanrai" value="Trileris"> Trileris</label>
+          <label class="zyma"><input type="checkbox" name="zanrai" value="Drama"> Drama</label>
+          <label class="zyma"><input type="checkbox" name="zanrai" value="Veiksmo"> Veiksmo</label>
+          <label class="zyma"><input type="checkbox" name="zanrai" value="Komedija"> Komedija</label>
+          <label class="zyma"><input type="checkbox" name="zanrai" value="Siaubo"> Siaubo</label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Režisierius *</legend>
+        <div class="laukas"><label><span>Vardas (keli – atskirkite kableliais)</span><input type="text" name="rezisierius" data-path="/rezisierius" required></label></div>
+      </fieldset>
+
+      <fieldset id="aktoriu-grupe">
+        <legend>Aktoriai *</legend>
+        <div id="aktoriai-sarasas"></div>
+        <button type="button" class="mygtukas maza" id="prideti-aktoriu">Pridėti aktorių</button>
+      </fieldset>
+
+      <fieldset id="platformu-grupe">
+        <legend>Platformos</legend>
+        <div id="platformos-sarasas"></div>
+        <button type="button" class="mygtukas maza" id="prideti-platforma">Pridėti platformą</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>Aprašas</legend>
+        <div class="laukas"><label><span>Trumpas aprašymas</span><textarea name="aprasas" data-path="/aprasas" rows="3"></textarea></label></div>
+      </fieldset>
+
+      <footer class="dialogo-apacia">
+        <p class="pastaba">* privalomi laukai. Likusias taisykles (formatus, ribas, žanrus) tikrina serveris pagal JSON Schema.</p>
+        <button type="button" class="mygtukas" data-veiksmas="uzdaryti">Atšaukti</button>
+        <button type="submit" class="mygtukas pagrindinis" id="issaugoti">Išsaugoti</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Šalinimo patvirtinimas -->
+  <dialog id="patvirtinimo-dialogas" aria-labelledby="patvirtinimo-antraste">
+    <form method="dialog" class="patvirtinimas" id="patvirtinimo-forma">
+      <h2 id="patvirtinimo-antraste">Šalinti filmą?</h2>
+      <p id="patvirtinimo-tekstas"></p>
+      <p id="patvirtinimo-klaida" class="lauko-klaida" role="alert" hidden></p>
+      <div class="dialogo-apacia">
+        <button type="button" class="mygtukas" data-veiksmas="uzdaryti">Palikti</button>
+        <button type="button" class="mygtukas pavojus" id="patvirtinti-salinima">Šalinti</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- XML peržiūra (Accept: application/xml) -->
+  <dialog id="xml-dialogas" aria-labelledby="xml-antraste">
+    <header class="dialogo-antraste">
+      <h2 id="xml-antraste">XML atsakymas</h2>
+      <button type="button" class="mygtukas maza" data-veiksmas="uzdaryti">Uždaryti</button>
+    </header>
+    <pre id="xml-turinys" tabindex="0"></pre>
+  </dialog>
+
+  <!-- Eilučių šablonai -->
+  <template id="aktoriaus-sablonas">
+    <fieldset class="eilute">
+      <legend>Aktorius <span class="nr"></span></legend>
+      <div class="laukas"><label><span>ID *</span><input type="text" data-field="id" required placeholder="A007"></label></div>
+      <div class="laukas"><label><span>Vardas *</span><input type="text" data-field="vardas" required></label></div>
+      <div class="laukas"><label><span>Vaidmuo *</span><input type="text" data-field="vaidmuo" required></label></div>
+      <div class="laukas"><label><span>Tipas</span>
+        <select data-field="tipas"><option value="pagrindinis">pagrindinis</option><option value="epizodinis">epizodinis</option></select></label></div>
+      <div class="laukas"><label><span>Gimimo data</span><input type="date" data-field="gimimoData"></label></div>
+      <button type="button" class="mygtukas maza" data-veiksmas="pasalinti-eilute">Pašalinti</button>
+    </fieldset>
+  </template>
+
+  <template id="platformos-sablonas">
+    <fieldset class="eilute">
+      <legend>Platforma <span class="nr"></span></legend>
+      <div class="laukas"><label><span>Pavadinimas *</span><input type="text" data-field="pavadinimas" required></label></div>
+      <div class="laukas"><label><span>Regionas *</span>
+        <select data-field="regionas" required><option value="">Pasirinkite</option><option>EU</option><option>US</option><option>AS</option></select></label></div>
+      <button type="button" class="mygtukas maza" data-veiksmas="pasalinti-eilute">Pašalinti</button>
+    </fieldset>
+  </template>
+</body>
+</html>

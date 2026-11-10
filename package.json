@@ -1,0 +1,17 @@
+{
+  "name": "filmu-katalogas",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Filmų katalogo RESTful API (JSON/XML, validacija pagal JSON Schema) ir Vanilla HTML/CSS/JS sąsaja",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/api.test.js"
+  },
+  "engines": { "node": ">=18" },
+  "dependencies": {
+    "@xmldom/xmldom": "0.8.10",
+    "ajv": "6.12.6",
+    "express": "4.21.2"
+  }
+}

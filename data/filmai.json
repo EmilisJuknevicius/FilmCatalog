@@ -1,0 +1,132 @@
+{
+  "katalogas": {
+    "filmai": [
+      {
+        "id": "F001",
+        "salis": "JAV",
+        "kalba": "EN",
+        "regionas": "EU",
+        "pavadinimas": "Inception",
+        "metai": 2010,
+        "trukme": 148,
+        "ivertinimas": 8.8,
+        "premjera": "2010-07-16",
+        "zanrai": [
+          "Mokslinė fantastika",
+          "Trileris"
+        ],
+        "rezisierius": {
+          "vardas": "Christopher Nolan"
+        },
+        "aktoriai": [
+          {
+            "id": "A001",
+            "tipas": "pagrindinis",
+            "vardas": "Leonardo DiCaprio",
+            "vaidmuo": "Cobb"
+          },
+          {
+            "id": "A002",
+            "tipas": "pagrindinis",
+            "vardas": "Joseph Gordon-Levitt",
+            "vaidmuo": "Arthur"
+          }
+        ],
+        "platformos": [
+          {
+            "pavadinimas": "Netflix",
+            "regionas": "EU"
+          },
+          {
+            "pavadinimas": "Apple TV",
+            "regionas": "US"
+          }
+        ]
+      },
+      {
+        "id": "F002",
+        "salis": "JAV",
+        "kalba": "EN",
+        "regionas": "EU",
+        "pavadinimas": "Interstellar",
+        "metai": 2014,
+        "trukme": 169,
+        "ivertinimas": 8.7,
+        "premjera": "2014-11-07",
+        "zanrai": [
+          "Mokslinė fantastika",
+          "Drama"
+        ],
+        "rezisierius": {
+          "vardas": "Christopher Nolan"
+        },
+        "aktoriai": [
+          {
+            "id": "A003",
+            "tipas": "pagrindinis",
+            "vardas": "Matthew McConaughey",
+            "vaidmuo": "Cooper"
+          },
+          {
+            "id": "A004",
+            "tipas": "pagrindinis",
+            "vardas": "Anne Hathaway",
+            "vaidmuo": "Brand"
+          }
+        ],
+        "platformos": [
+          {
+            "pavadinimas": "HBO Max",
+            "regionas": "EU"
+          },
+          {
+            "pavadinimas": "Apple TV",
+            "regionas": "US"
+          }
+        ]
+      },
+      {
+        "id": "F003",
+        "salis": "JAV",
+        "kalba": "EN",
+        "regionas": "US",
+        "pavadinimas": "The Matrix",
+        "metai": 1999,
+        "trukme": 136,
+        "ivertinimas": 8.7,
+        "premjera": "1999-03-31",
+        "zanrai": [
+          "Mokslinė fantastika",
+          "Veiksmo"
+        ],
+        "rezisierius": {
+          "vardas": "Lana Wachowski"
+        },
+        "aktoriai": [
+          {
+            "id": "A005",
+            "tipas": "pagrindinis",
+            "vardas": "Keanu Reeves",
+            "vaidmuo": "Neo"
+          },
+          {
+            "id": "A006",
+            "tipas": "pagrindinis",
+            "vardas": "Laurence Fishburne",
+            "vaidmuo": "Morpheus"
+          }
+        ],
+        "platformos": [
+          {
+            "pavadinimas": "Netflix",
+            "regionas": "EU"
+          },
+          {
+            "pavadinimas": "Prime Video",
+            "regionas": "US"
+          }
+        ]
+      }
+    ]
+  }
+}

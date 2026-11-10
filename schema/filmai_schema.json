@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-06/schema#",
+  "$id": "https://PasaulioFilmai.lt/filmai/schema.json",
+  "title": "Filmų katalogas",
+  "type": "object",
+  "required": ["katalogas"],
+  "additionalProperties": false,
+  "properties": {
+    "katalogas": {
+      "type": "object",
+      "required": ["filmai"],
+      "additionalProperties": false,
+      "properties": {
+        "filmai": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/filmas" }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+
+    "regionas": {
+      "type": "string",
+      "enum": ["EU", "US", "AS"]
+    },
+
+    "filmoId": {
+      "type": "string",
+      "pattern": "^F[0-9]{3}$"
+    },
+
+    "aktoriausId": {
+      "type": "string",
+      "pattern": "^A[0-9]{3}$"
+    },
+
+    "data": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+
+    "asmuo": {
+      "type": "object",
+      "required": ["vardas"],
+      "properties": {
+        "vardas": { "type": "string", "minLength": 1, "maxLength": 100 },
+        "gimimoData": { "$ref": "#/definitions/data" }
+      }
+    },
+
+    "aktorius": {
+      "allOf": [
+        { "$ref": "#/definitions/asmuo" },
+        {
+          "type": "object",
+          "required": ["id", "tipas", "vaidmuo"],
+          "properties": {
+            "id": { "$ref": "#/definitions/aktoriausId" },
+            "tipas": { "type": "string", "enum": ["pagrindinis", "epizodinis"] },
+            "vaidmuo": { "type": "string", "minLength": 1 }
+          }
+        }
+      ]
+    },
+
+    "rezisierius": {
+      "anyOf": [
+        { "$ref": "#/definitions/asmuo" },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/asmuo" }
+        }
+      ]
+    },
+
+    "platforma": {
+      "type": "object",
+      "required": ["pavadinimas", "regionas"],
+      "additionalProperties": false,
+      "properties": {
+        "pavadinimas": { "type": "string", "minLength": 1 },
+        "regionas": { "$ref": "#/definitions/regionas" }
+      }
+    },
+
+    "filmas": {
+      "type": "object",
+      "required": [
+        "id", "salis", "kalba", "regionas", "pavadinimas",
+        "metai", "trukme", "zanrai", "rezisierius", "aktoriai", "platformos"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "$ref": "#/definitions/filmoId" },
+        "salis": { "type": "string", "minLength": 2 },
+        "kalba": { "type": "string", "pattern": "^[A-Z]{2}$" },
+        "regionas": { "$ref": "#/definitions/regionas" },
+        "kitiRegionai": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/definitions/regionas" }
+        },
+        "pavadinimas": { "type": "string", "minLength": 1 },
+        "metai": { "type": "integer", "minimum": 1888, "maximum": 2100 },
+        "trukme": { "type": "integer", "minimum": 1, "maximum": 600 },
+        "ivertinimas": { "type": "number", "minimum": 0, "maximum": 10 },
+        "premjera": { "$ref": "#/definitions/data" },
+        "numatomaPremjera": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+        "zanrai": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": ["Mokslinė fantastika", "Trileris", "Drama", "Veiksmo", "Komedija", "Siaubo"]
+          }
+        },
+        "rezisierius": { "$ref": "#/definitions/rezisierius" },
+        "aktoriai": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/definitions/aktorius" }
+        },
+        "platformos": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/platforma" }
+        },
+        "aprasas": { "type": "string" }
+      },
+      "oneOf": [
+        { "required": ["premjera"] },
+        { "required": ["numatomaPremjera"] }
+      ]
+    }
+  }
+}
