@@ -7,7 +7,7 @@ const { DOMParser } = require('@xmldom/xmldom');
 
 const NS = 'https://PasaulioFilmai.lt/filmai';
 
-/* ------------------------------ XML -> objektas ------------------------------ */
+/*XML -> objektas */
 const nameOf = (n) => n.localName || n.nodeName;
 const kids = (el, name) =>
   el ? Array.from(el.childNodes).filter((n) => n.nodeType === 1 && nameOf(n) === name) : [];
@@ -78,7 +78,7 @@ function parseFilmas(source) {
   return f;
 }
 
-/* ------------------------------ objektas -> XML ------------------------------ */
+/* objektas -> XML */
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const a = (k, v) => (v === undefined || v === null ? '' : ` ${k}="${esc(v)}"`);
