@@ -74,8 +74,3 @@ Be schemos taisyklių serveris tikrina ir XSD `xs:key` atitikmenį: aktoriaus ID
 **Skirtumas tarp įpėdinio ir vaiko:** `div p` randa **visus** `p` div viduje, o `div > p` – tik tuos, kurie yra tiesiogiai div viduje. Jei elementas įdėtas giliau (ul → li → ul → li), `>` paliestų tik pirmo lygio, o tarpas – visus.
 
 **Kaskada** – mechanizmas, kuriuo naršyklė išsprendžia, kuri taisyklė laimi, kai kelios liečia tą pačią savybę. Eiga: (1) svarba (`!important` laimi), (2) specifiškumas (ID > klasė/atributas/pseudoklasė > elementas), (3) eilės tvarka (vėlesnė laimi). Specifiškumas rašomas kaip (ID, klasės, elementai).
-
-**`!important` pavyzdžiai:**
-
-1. *Šalinimo mygtukas kortelėje.* Taisyklė `.kortele .veiksmai button` (0,2,1) specifiškesnė už `.pavojus` (0,1,0), todėl be `!important` „Šalinti“ atrodytų pilkas kaip kiti mygtukai. Su `!important` `.pavojus` visada raudonas.
-2. *Klaidingas laukas.* `.neteisinga` (0,1,0) pralaimėtų `.laukas input` (0,1,1) ir fokuso taisyklei (0,2,1): be `!important` raudonas rėmelis ir rausvas fonas išnyktų.
