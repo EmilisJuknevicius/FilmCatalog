@@ -21,7 +21,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.text({ type: ['application/xml', 'text/xml'], limit: '1mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-/* ---------- Atsakymų formatas (Accept) ---------- */
+/* Atsakymų formatas (Accept)*/
 app.use('/api', (req, res, next) => {
   if (!req.accepts(['json', 'xml'])) {
     return res.status(406).json({ status: 406, klaida: 'Palaikomi formatai: application/json, application/xml' });
@@ -38,7 +38,7 @@ function send(req, res, status, kind, payload) {
 const fail = (req, res, status, klaida, detales) =>
   send(req, res, status, 'klaida', detales ? { status, klaida, detales } : { status, klaida });
 
-/* ---------- Užklausos kūnas (Content-Type) ---------- */
+/* Užklausos kūnas (Content-Type)*/
 function readBody(req) {
   if (req.is(['application/json'])) return { data: req.body };
   if (req.is(['application/xml', 'text/xml'])) {
@@ -59,7 +59,7 @@ function nextId(items) {
   return 'F' + String(max + 1).padStart(3, '0');
 }
 
-/* ---------- Maršrutai ---------- */
+/* Maršrutai */
 app.get('/api/filmai', async (req, res, next) => {
   try {
     let items = await store.list();
@@ -141,7 +141,7 @@ app.delete('/api/filmai/:id', async (req, res, next) => {
 
 app.use('/api', (req, res) => fail(req, res, 404, 'Toks API adresas neegzistuoja'));
 
-/* ---------- Klaidų tvarkytojas ---------- */
+/*Klaidų tvarkytojas */
 app.use((err, req, res, next) => {
   if (res.headersSent) return next(err);
   if (err.type === 'entity.parse.failed') return fail(req, res, 400, `Neteisingas JSON: ${err.message}`);
